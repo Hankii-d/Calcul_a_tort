@@ -1,0 +1,129 @@
+#--------------------------------------
+# Last modification : 2022/03/27
+# Author            : Hankii
+# Version           : 1.0
+#--------------------------------------
+
+
+from tkinter import *
+from math import pi
+
+#------commands
+def button_pushed(btxt):
+    if btxt == '=':
+        t = str(affichage.get()).replace('x', '*').replace('^', '**').replace('÷', '/').replace('²', '**2').replace('π', 'pi')
+        try:
+            a = eval(t)
+        except SyntaxError:
+            popup = Tk()
+            popup.title('Error !')
+            popup.geometry('200x40')
+            popup.minsize(200, 40)
+            popup.maxsize(200, 40)
+            Text_error = Label(popup, text=('Syntax Error !'), font=('Arial',24))
+            Text_error.pack()
+        else:
+            affichage_res.set(a)
+    elif btxt == '⇦':
+        t = affichage.get()
+        affichage.set(str(t)[0:-1])
+    elif btxt == 'C':
+        affichage.set('')
+    else:
+        t = affichage.get()
+        affichage.set(str(t) + btxt)
+
+
+#------GUI
+#---init
+window = Tk()
+window.title('Calcul à tort')
+window.geometry('400x270')
+window.minsize(400, 330)
+window.maxsize(400, 330)
+window.wm_iconbitmap(bitmap = 'C:/Users/legoa/PycharmProjects/pythonProject/image_calculatrice.ico')
+window.config(background='black')
+
+#---affichage
+frame_result = Frame(window)
+frame_result.pack(expand=YES)
+
+frame_txt = Frame(window)
+frame_txt.pack(expand=YES)
+
+affichage = StringVar()
+affichage_res = StringVar()
+#text result
+txt_calcul = Label(frame_result, height=1, width=21, font=('Arial',24), text='(4+1)-2', anchor=W, textvariable=affichage) #help
+txt_calcul.grid(row=0, sticky=E)
+
+txt_affichage_res = Label(frame_result, height=1, font=('Arial',24), text='', anchor=E, textvariable=affichage_res)
+txt_affichage_res.grid(row=1, sticky=E)
+
+#---sous titre
+#label_subtitle = Label(window, text='By Hanki', font=('Arial', 10), bg='black', fg='white', anchor=SW)
+#label_subtitle.pack(side=LEFT)
+
+#label_subtitle = Label(window, text='By Hanki', font=('Arial', 15), bg='black', fg='black', anchor=SW)
+#label_subtitle.pack(side=LEFT)
+
+#---boutons
+frame_pi = Frame(window)
+frame_pi.pack(side=RIGHT)
+
+frame_buttons = Frame(frame_pi)
+frame_buttons.grid(column=1, row=2, rowspan=4) #.grid car la frame est dans l'autre frame, les elements dans frame_pi sont gérés par grid
+
+lst_buttons = []
+lst_commands = [lambda : button_pushed(str(0)), lambda : button_pushed(str(1)), lambda : button_pushed(str(2)), lambda : button_pushed(str(3)), lambda : button_pushed(str(4)), lambda : button_pushed(str(5)),
+                lambda: button_pushed(str(6)), lambda : button_pushed(str(7)), lambda : button_pushed(str(8)), lambda : button_pushed(str(9)) ]
+for v in range(10):
+    lst_buttons.append(Button(frame_buttons, text=str(v), font=('Arial',12), height="2", bg='white', borderwidth="1", width='5', command=lst_commands[v]))
+    if v == 0:
+        lst_buttons[v].grid(column=0, row=3)
+    else:
+        lst_buttons[v].grid(column=(v%3-1)%3, row=(3-v//3) - (0, 1, 1)[v%3])
+
+button_p = Button(frame_buttons, text='.', font=('Arial',12), height="2", bg='white', borderwidth="1", width='5', command=lambda: button_pushed('.'))
+button_p.grid(column=1, row=3)
+
+button_rpar = Button(frame_pi, text='(',  font=('Arial',12), height="2", bg='white', borderwidth="1", width='5', command=lambda: button_pushed('('))
+button_rpar.grid(column=1, row=1, sticky=W)
+
+button_lpar = Button(frame_pi, text=')',  font=('Arial',12), height="2", bg='white', borderwidth="1", width='5', command=lambda: button_pushed(')'))
+button_lpar.grid(column=1, row=1)
+
+button_pi = Button(frame_pi, text='π',  font=('Arial',12), height="2", bg='white', borderwidth="1", width='5', command=lambda: button_pushed('π'))
+button_pi.grid(column=1, row=1, sticky=E)
+
+button_carre = Button(frame_pi, text='²',  font=('Arial',12), height="2", bg='white', borderwidth="1", width='5', command=lambda: button_pushed('²'))
+button_carre.grid(column=0, row=1)
+
+button_enlever = Button(frame_pi, text='⇦',  font=('Arial',12), height="2", bg='white', borderwidth="1", width='5', command=lambda: button_pushed('⇦'))
+button_enlever.grid(column=0, row=3)
+
+button_racine = Button(frame_pi, text='^',  font=('Arial',12), height="2", bg='white', borderwidth="1", width='5', command=lambda: button_pushed('^'))
+button_racine.grid(column=0, row=2)
+
+button_eq = Button(frame_pi, text='=',  font=('Arial',12), height="2", bg='white', borderwidth="1", width='11', command=lambda: button_pushed('='))
+button_eq.grid(column=1, row=5, columnspan=2, sticky=E)
+
+button_div = Button(frame_pi, text='÷',  font=('Arial',12), height="2", bg='white', borderwidth="1", width='5', command=lambda: button_pushed('÷'))
+button_div.grid(column=2, row=4)
+
+button_moins = Button(frame_pi, text='-',  font=('Arial',12), height="2", bg='white', borderwidth="1", width='5', command=lambda: button_pushed('-'))
+button_moins.grid(column=2, row=3)
+
+button_plus = Button(frame_pi, text='+',  font=('Arial',12), height="2", bg='white', borderwidth="1", width='5', command=lambda: button_pushed('+'))
+button_plus.grid(column=2, row=2)
+
+button_x = Button(frame_pi, text='x',  font=('Arial',12), height="2", bg='white', borderwidth="1", width='5', command=lambda: button_pushed('x')) #↵  ↩ ⇐  ⇚ ⇦
+button_x.grid(column=2, row=1)
+
+button_quit = Button(frame_pi, text='Quit',  font=('Arial',12), height="2", bg='white', borderwidth="1", width='5', command=window.quit)
+button_quit.grid(column=0, row=5, sticky=S)
+
+button_clear = Button(frame_pi, text='C',  font=('Arial',12), height="2", bg='white', borderwidth="1", width='5', command=lambda: button_pushed('C'))
+button_clear.grid(column=0, row=4, sticky=S)
+
+window.mainloop()
